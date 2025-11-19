@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa - Condições de Trabalho Profissional</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pesquisa sobre Condições de Trabalho</h1>
+            <nav>
+                <a href="index.html" class="active">Formulário</a>
+                <a href="relatorios.html">Relatórios</a>
+            </nav>
+        </header>
+
+        <form id="pesquisaForm">
+            <!-- Questão 11 -->
+            <div class="question-group">
+                <label class="question-title">11 – Durante seu fazer profissional, em que grau você realiza sua relativa autonomia?</label>
+                <div class="options">
+                    <label><input type="radio" name="q11" value="Não realiza" required> Não realiza</label>
+                    <label><input type="radio" name="q11" value="Baixa realização"> Baixa realização</label>
+                    <label><input type="radio" name="q11" value="Realização moderada"> Realização moderada</label>
+                    <label><input type="radio" name="q11" value="Alta realização"> Alta realização</label>
+                    <label><input type="radio" name="q11" value="Realização total"> Realização total</label>
+                </div>
+            </div>
+
+            <!-- Questão 12 -->
+            <div class="question-group">
+                <label class="question-title">12 – Considerando os instrumentos utilizados no cotidiano profissional, selecione as ações que você desenvolve para a realização das suas atividades diárias:</label>
+                <div class="options checkbox-grid">
+                    <label><input type="checkbox" name="q12" value="Entrevista"> Entrevista</label>
+                    <label><input type="checkbox" name="q12" value="Elaboração de relatório socioeconômico"> Elaboração de relatório socioeconômico</label>
+                    <label><input type="checkbox" name="q12" value="Visita domiciliar"> Visita domiciliar</label>
+                    <label><input type="checkbox" name="q12" value="Parecer social"> Parecer social</label>
+                    <label><input type="checkbox" name="q12" value="Laudo social"> Laudo social</label>
+                    <label><input type="checkbox" name="q12" value="Orientações e encaminhamentos a outros serviços públicos e privados"> Orientações e encaminhamentos a outros serviços públicos e privados</label>
+                    <label><input type="checkbox" name="q12" value="Orientações e ações de âmbito individual de natureza socioeducativa e politizadora"> Orientações e ações de âmbito individual de natureza socioeducativa e politizadora, orientações e encaminhamentos que viabilizem o acesso do usuário aos serviços da instituição</label>
+                    <label><input type="checkbox" name="q12" value="Contatos e atendimento à família dos usuários"> Contatos e atendimento à família dos usuários</label>
+                    <label><input type="checkbox" name="q12" value="Participação nos conselhos gestor, municipal, estadual ou nacional"> Participação nos conselhos gestor, municipal, estadual ou nacional</label>
+                    <label><input type="checkbox" name="q12" value="Realização de palestras, capacitação, reuniões, oficinas, grupos"> Realização de palestras, capacitação, reuniões, oficinas, grupos, de natureza socioeducativa e/ou politizadora/mobilizadora</label>
+                    <label><input type="checkbox" name="q12" value="Elaboração de projetos, relatórios"> Elaboração de projetos, relatórios</label>
+                    <label><input type="checkbox" name="q12" value="Investigação (pesquisa), sistematização da prática profissional"> Investigação (pesquisa), sistematização da prática profissional</label>
+                    <label><input type="checkbox" name="q12" value="Participação em comissões, no planejamento da unidade de saúde"> Participação em comissões, no planejamento da unidade de saúde, etc.</label>
+                    <label><input type="checkbox" name="q12" value="Supervisão de estágio em Serviço"> Supervisão de estágio em Serviço</label>
+                </div>
+            </div>
+
+            <!-- Questão 13 -->
+            <div class="question-group">
+                <label class="question-title">13 – Você acredita que o serviço oferecido nesta instituição possui um viés:</label>
+                <div class="options">
+                    <label><input type="radio" name="q13" value="Democrático" required> Democrático</label>
+                    <label><input type="radio" name="q13" value="Intersetorial"> Intersetorial</label>
+                    <label><input type="radio" name="q13" value="Integral"> Integral</label>
+                    <label><input type="radio" name="q13" value="Nenhuma das alternativas"> Nenhuma das alternativas</label>
+                    <label>
+                        <input type="radio" name="q13" value="Outro"> Outro, especificar:
+                        <input type="text" name="q13_outro" class="text-input" placeholder="Especifique...">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Questão 14 -->
+            <div class="question-group">
+                <label class="question-title">14 – Considerando o caráter multidisciplinar adotado pelo SUS. Há de fato diálogo multidisciplinar?</label>
+                <div class="options">
+                    <label><input type="radio" name="q14_dialogo" value="Sim" required> Sim</label>
+                    <label><input type="radio" name="q14_dialogo" value="Não"> Não</label>
+                </div>
+                <label class="question-subtitle">Qual o formato, em que se dá, a relação de poder e saber?</label>
+                <div class="options">
+                    <label><input type="radio" name="q14_formato" value="Vertical" required> Vertical</label>
+                    <label><input type="radio" name="q14_formato" value="Horizontal"> Horizontal</label>
+                </div>
+            </div>
+
+            <!-- Questão 15 -->
+            <div class="question-group">
+                <label class="question-title">15 – Como ocorre o planejamento do seu trabalho? (Mais de uma alternativa pode ser marcada)</label>
+                <div class="options">
+                    <label><input type="checkbox" name="q15" value="Individual"> Individual</label>
+                    <label><input type="checkbox" name="q15" value="Periódico diário/semanal/mensal"> Periódico diário/semanal/mensal</label>
+                    <label><input type="checkbox" name="q15" value="Em conjunto à equipe (em rede)"> Em conjunto à equipe (em rede)</label>
+                    <label><input type="checkbox" name="q15" value="Autogestão"> Autogestão</label>
+                    <label>
+                        <input type="checkbox" name="q15" value="Outra"> Outra:
+                        <input type="text" name="q15_outra" class="text-input" placeholder="Especifique...">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Questão 16 -->
+            <div class="question-group">
+                <label class="question-title">16 – Como você classificaria suas condições de trabalho?</label>
+                <div class="table-container">
+                    <table class="rating-table">
+                        <thead>
+                            <tr>
+                                <th>Aspecto</th>
+                                <th>Muito ruim</th>
+                                <th>Ruim</th>
+                                <th>Neutro</th>
+                                <th>Bom</th>
+                                <th>Muito bom</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Estrutura física</td>
+                                <td><input type="radio" name="q16_estrutura" value="Muito ruim" required></td>
+                                <td><input type="radio" name="q16_estrutura" value="Ruim"></td>
+                                <td><input type="radio" name="q16_estrutura" value="Neutro"></td>
+                                <td><input type="radio" name="q16_estrutura" value="Bom"></td>
+                                <td><input type="radio" name="q16_estrutura" value="Muito bom"></td>
+                            </tr>
+                            <tr>
+                                <td>Vínculo empregatício</td>
+                                <td><input type="radio" name="q16_vinculo" value="Muito ruim" required></td>
+                                <td><input type="radio" name="q16_vinculo" value="Ruim"></td>
+                                <td><input type="radio" name="q16_vinculo" value="Neutro"></td>
+                                <td><input type="radio" name="q16_vinculo" value="Bom"></td>
+                                <td><input type="radio" name="q16_vinculo" value="Muito bom"></td>
+                            </tr>
+                            <tr>
+                                <td>Carga horária</td>
+                                <td><input type="radio" name="q16_carga" value="Muito ruim" required></td>
+                                <td><input type="radio" name="q16_carga" value="Ruim"></td>
+                                <td><input type="radio" name="q16_carga" value="Neutro"></td>
+                                <td><input type="radio" name="q16_carga" value="Bom"></td>
+                                <td><input type="radio" name="q16_carga" value="Muito bom"></td>
+                            </tr>
+                            <tr>
+                                <td>Fluxo de trabalho</td>
+                                <td><input type="radio" name="q16_fluxo" value="Muito ruim" required></td>
+                                <td><input type="radio" name="q16_fluxo" value="Ruim"></td>
+                                <td><input type="radio" name="q16_fluxo" value="Neutro"></td>
+                                <td><input type="radio" name="q16_fluxo" value="Bom"></td>
+                                <td><input type="radio" name="q16_fluxo" value="Muito bom"></td>
+                            </tr>
+                            <tr>
+                                <td>Sistematização da prática</td>
+                                <td><input type="radio" name="q16_sistematizacao" value="Muito ruim" required></td>
+                                <td><input type="radio" name="q16_sistematizacao" value="Ruim"></td>
+                                <td><input type="radio" name="q16_sistematizacao" value="Neutro"></td>
+                                <td><input type="radio" name="q16_sistematizacao" value="Bom"></td>
+                                <td><input type="radio" name="q16_sistematizacao" value="Muito bom"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Enviar Resposta</button>
+                <button type="reset" class="btn-secondary">Limpar Formulário</button>
+            </div>
+        </form>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            Resposta enviada com sucesso!
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

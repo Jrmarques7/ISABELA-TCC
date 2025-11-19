@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: pesquisa-condicoes-trabalho
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/data/pesquisa.db
+    disk:
+      name: pesquisa-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1

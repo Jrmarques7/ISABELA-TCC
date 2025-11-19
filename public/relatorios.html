@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Pesquisa Condições de Trabalho</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pesquisa sobre Condições de Trabalho</h1>
+            <nav>
+                <a href="index.html">Formulário</a>
+                <a href="relatorios.html" class="active">Relatórios</a>
+            </nav>
+        </header>
+
+        <div class="reports-container">
+            <div class="report-header">
+                <h2>Relatório de Respostas</h2>
+                <div class="report-actions">
+                    <button onclick="exportarCSV()" class="btn-primary btn-export">Exportar CSV</button>
+                    <button onclick="exportarJSON()" class="btn-secondary btn-export">Exportar JSON</button>
+                    <button onclick="confirmarLimpeza()" class="btn-secondary btn-danger">Limpar Dados</button>
+                </div>
+            </div>
+
+            <!-- Resumo estatístico -->
+            <div class="stats-summary">
+                <div class="stat-card">
+                    <div class="number" id="totalRespostas">0</div>
+                    <div class="label">Total de Respostas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="ultimaResposta">-</div>
+                    <div class="label">Última Resposta</div>
+                </div>
+            </div>
+
+            <!-- Questão 11 -->
+            <div class="chart-section">
+                <h3>11 – Grau de realização da autonomia profissional</h3>
+                <div class="chart-container" id="chart-q11"></div>
+            </div>
+
+            <!-- Questão 12 -->
+            <div class="chart-section">
+                <h3>12 – Instrumentos utilizados no cotidiano profissional</h3>
+                <div class="chart-container" id="chart-q12"></div>
+            </div>
+
+            <!-- Questão 13 -->
+            <div class="chart-section">
+                <h3>13 – Viés do serviço oferecido na instituição</h3>
+                <div class="chart-container" id="chart-q13"></div>
+            </div>
+
+            <!-- Questão 14 - Diálogo -->
+            <div class="chart-section">
+                <h3>14 – Há diálogo multidisciplinar?</h3>
+                <div class="chart-container" id="chart-q14-dialogo"></div>
+            </div>
+
+            <!-- Questão 14 - Formato -->
+            <div class="chart-section">
+                <h3>14 – Formato da relação de poder e saber</h3>
+                <div class="chart-container" id="chart-q14-formato"></div>
+            </div>
+
+            <!-- Questão 15 -->
+            <div class="chart-section">
+                <h3>15 – Como ocorre o planejamento do trabalho</h3>
+                <div class="chart-container" id="chart-q15"></div>
+            </div>
+
+            <!-- Questão 16 - Estrutura -->
+            <div class="chart-section">
+                <h3>16 – Condições de trabalho: Estrutura física</h3>
+                <div class="chart-container" id="chart-q16-estrutura"></div>
+            </div>
+
+            <!-- Questão 16 - Vínculo -->
+            <div class="chart-section">
+                <h3>16 – Condições de trabalho: Vínculo empregatício</h3>
+                <div class="chart-container" id="chart-q16-vinculo"></div>
+            </div>
+
+            <!-- Questão 16 - Carga -->
+            <div class="chart-section">
+                <h3>16 – Condições de trabalho: Carga horária</h3>
+                <div class="chart-container" id="chart-q16-carga"></div>
+            </div>
+
+            <!-- Questão 16 - Fluxo -->
+            <div class="chart-section">
+                <h3>16 – Condições de trabalho: Fluxo de trabalho</h3>
+                <div class="chart-container" id="chart-q16-fluxo"></div>
+            </div>
+
+            <!-- Questão 16 - Sistematização -->
+            <div class="chart-section">
+                <h3>16 – Condições de trabalho: Sistematização da prática</h3>
+                <div class="chart-container" id="chart-q16-sistematizacao"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Carregar relatórios ao abrir a página
+        document.addEventListener('DOMContentLoaded', function() {
+            const respostas = getRespostas();
+
+            // Atualizar estatísticas
+            document.getElementById('totalRespostas').textContent = respostas.length;
+
+            if (respostas.length > 0) {
+                const ultima = respostas[respostas.length - 1];
+                document.getElementById('ultimaResposta').textContent =
+                    ultima.dataEnvio.split(' ')[0]; // Só a data
+            }
+
+            // Gerar gráficos
+            gerarGraficoBarras('chart-q11', contarRespostas(respostas, 'q11'));
+            gerarGraficoBarras('chart-q12', contarRespostas(respostas, 'q12'));
+            gerarGraficoBarras('chart-q13', contarRespostas(respostas, 'q13'));
+            gerarGraficoBarras('chart-q14-dialogo', contarRespostas(respostas, 'q14_dialogo'));
+            gerarGraficoBarras('chart-q14-formato', contarRespostas(respostas, 'q14_formato'));
+            gerarGraficoBarras('chart-q15', contarRespostas(respostas, 'q15'));
+
+            // Questão 16 - subcampos
+            gerarGraficoBarras('chart-q16-estrutura', contarRespostasQ16(respostas, 'estrutura'));
+            gerarGraficoBarras('chart-q16-vinculo', contarRespostasQ16(respostas, 'vinculo'));
+            gerarGraficoBarras('chart-q16-carga', contarRespostasQ16(respostas, 'carga'));
+            gerarGraficoBarras('chart-q16-fluxo', contarRespostasQ16(respostas, 'fluxo'));
+            gerarGraficoBarras('chart-q16-sistematizacao', contarRespostasQ16(respostas, 'sistematizacao'));
+        });
+    </script>
+</body>
+</html>
