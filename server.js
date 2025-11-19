@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const Database = require('better-sqlite3');
+const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,44 +11,55 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Inicializar banco de dados
-const dbPath = process.env.DATABASE_PATH || './data/pesquisa.db';
-const db = new Database(dbPath);
+// Configurar conexão PostgreSQL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 // Criar tabela se não existir
-db.exec(`
-  CREATE TABLE IF NOT EXISTS respostas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    q11 TEXT,
-    q12 TEXT,
-    q13 TEXT,
-    q14_dialogo TEXT,
-    q14_formato TEXT,
-    q15 TEXT,
-    q16_estrutura TEXT,
-    q16_vinculo TEXT,
-    q16_carga TEXT,
-    q16_fluxo TEXT,
-    q16_sistematizacao TEXT
-  )
-`);
+async function initDatabase() {
+  const client = await pool.connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS respostas (
+        id SERIAL PRIMARY KEY,
+        data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        q11 TEXT,
+        q12 TEXT,
+        q13 TEXT,
+        q14_dialogo TEXT,
+        q14_formato TEXT,
+        q15 TEXT,
+        q16_estrutura TEXT,
+        q16_vinculo TEXT,
+        q16_carga TEXT,
+        q16_fluxo TEXT,
+        q16_sistematizacao TEXT
+      )
+    `);
+    console.log('Tabela criada/verificada com sucesso');
+  } catch (error) {
+    console.error('Erro ao criar tabela:', error);
+  } finally {
+    client.release();
+  }
+}
 
 // Rotas da API
 
 // Salvar nova resposta
-app.post('/api/respostas', (req, res) => {
+app.post('/api/respostas', async (req, res) => {
   try {
     const dados = req.body;
 
-    const stmt = db.prepare(`
+    const result = await pool.query(`
       INSERT INTO respostas (
         q11, q12, q13, q14_dialogo, q14_formato, q15,
         q16_estrutura, q16_vinculo, q16_carga, q16_fluxo, q16_sistematizacao
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    const result = stmt.run(
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id
+    `, [
       dados.q11 || null,
       JSON.stringify(dados.q12 || []),
       dados.q13 || null,
@@ -60,11 +71,11 @@ app.post('/api/respostas', (req, res) => {
       dados.q16?.carga || null,
       dados.q16?.fluxo || null,
       dados.q16?.sistematizacao || null
-    );
+    ]);
 
     res.json({
       success: true,
-      id: result.lastInsertRowid,
+      id: result.rows[0].id,
       message: 'Resposta salva com sucesso'
     });
   } catch (error) {
@@ -74,12 +85,12 @@ app.post('/api/respostas', (req, res) => {
 });
 
 // Buscar todas as respostas
-app.get('/api/respostas', (req, res) => {
+app.get('/api/respostas', async (req, res) => {
   try {
-    const respostas = db.prepare('SELECT * FROM respostas ORDER BY data_envio DESC').all();
+    const result = await pool.query('SELECT * FROM respostas ORDER BY data_envio DESC');
 
     // Converter JSON strings de volta para arrays
-    const respostasFormatadas = respostas.map(r => ({
+    const respostasFormatadas = result.rows.map(r => ({
       id: r.id,
       dataEnvio: r.data_envio,
       q11: r.q11,
@@ -105,14 +116,14 @@ app.get('/api/respostas', (req, res) => {
 });
 
 // Estatísticas agregadas
-app.get('/api/estatisticas', (req, res) => {
+app.get('/api/estatisticas', async (req, res) => {
   try {
-    const total = db.prepare('SELECT COUNT(*) as count FROM respostas').get();
-    const ultima = db.prepare('SELECT data_envio FROM respostas ORDER BY data_envio DESC LIMIT 1').get();
+    const total = await pool.query('SELECT COUNT(*) as count FROM respostas');
+    const ultima = await pool.query('SELECT data_envio FROM respostas ORDER BY data_envio DESC LIMIT 1');
 
     res.json({
-      total: total.count,
-      ultimaResposta: ultima?.data_envio || null
+      total: parseInt(total.rows[0].count),
+      ultimaResposta: ultima.rows[0]?.data_envio || null
     });
   } catch (error) {
     console.error('Erro ao buscar estatísticas:', error);
@@ -121,9 +132,9 @@ app.get('/api/estatisticas', (req, res) => {
 });
 
 // Limpar todas as respostas (protegido por confirmação)
-app.delete('/api/respostas', (req, res) => {
+app.delete('/api/respostas', async (req, res) => {
   try {
-    db.prepare('DELETE FROM respostas').run();
+    await pool.query('DELETE FROM respostas');
     res.json({ success: true, message: 'Todas as respostas foram removidas' });
   } catch (error) {
     console.error('Erro ao limpar respostas:', error);
@@ -137,12 +148,14 @@ app.get('*', (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+initDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+  });
 });
 
-// Fechar banco ao encerrar
+// Fechar pool ao encerrar
 process.on('SIGINT', () => {
-  db.close();
+  pool.end();
   process.exit();
 });
