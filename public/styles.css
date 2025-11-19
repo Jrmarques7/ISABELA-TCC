@@ -350,6 +350,13 @@ form {
     font-style: italic;
 }
 
+.loading {
+    text-align: center;
+    color: #7f8c8d;
+    padding: 30px;
+    font-style: italic;
+}
+
 /* Responsivo */
 @media (max-width: 768px) {
     .container {

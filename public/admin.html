@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Pesquisa Condições de Trabalho</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .responses-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .responses-table th,
+        .responses-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .responses-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+
+        .responses-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .btn-view {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 5px;
+        }
+
+        .btn-view:hover {
+            background: #2980b9;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .close-modal {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .close-modal:hover {
+            color: #2c3e50;
+        }
+
+        .response-detail {
+            margin-bottom: 15px;
+        }
+
+        .response-detail strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .response-detail p {
+            margin: 0;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .response-detail ul {
+            margin: 0;
+            padding: 8px 12px 8px 30px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pesquisa sobre Condições de Trabalho</h1>
+            <nav>
+                <a href="index.html">Formulário</a>
+                <a href="relatorios.html">Relatórios</a>
+                <a href="admin.html" class="active">Administração</a>
+            </nav>
+        </header>
+
+        <div class="admin-container">
+            <div class="report-header">
+                <h2>Gerenciar Respostas</h2>
+                <div class="admin-actions">
+                    <button onclick="carregarRespostas()" class="btn-secondary">Atualizar</button>
+                    <button onclick="confirmarLimpeza()" class="btn-secondary btn-danger">Excluir Todas</button>
+                </div>
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-card">
+                    <div class="number" id="totalRespostas">0</div>
+                    <div class="label">Total de Respostas</div>
+                </div>
+            </div>
+
+            <div id="loadingMessage" class="loading">Carregando respostas...</div>
+
+            <div class="table-wrapper">
+                <table class="responses-table" id="respostasTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Data</th>
+                            <th>Q11 - Autonomia</th>
+                            <th>Q13 - Viés</th>
+                            <th>Q14 - Diálogo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="respostasBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver detalhes -->
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalhes da Resposta #<span id="modalId"></span></h3>
+                <span class="close-modal" onclick="fecharModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let todasRespostas = [];
+
+        async function carregarRespostas() {
+            try {
+                document.getElementById('loadingMessage').style.display = 'block';
+                document.getElementById('respostasTable').style.display = 'none';
+
+                todasRespostas = await getRespostas();
+
+                document.getElementById('totalRespostas').textContent = todasRespostas.length;
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('respostasTable').style.display = 'table';
+
+                const tbody = document.getElementById('respostasBody');
+                tbody.innerHTML = '';
+
+                if (todasRespostas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #7f8c8d;">Nenhuma resposta encontrada</td></tr>';
+                    return;
+                }
+
+                todasRespostas.forEach(resposta => {
+                    const data = new Date(resposta.dataEnvio);
+                    const dataFormatada = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${resposta.id}</td>
+                        <td>${dataFormatada}</td>
+                        <td>${resposta.q11 || '-'}</td>
+                        <td>${resposta.q13 || '-'}</td>
+                        <td>${resposta.q14_dialogo || '-'}</td>
+                        <td>
+                            <button class="btn-view" onclick="verDetalhes(${resposta.id})">Ver</button>
+                            <button class="btn-delete" onclick="excluirResposta(${resposta.id})">Excluir</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar respostas:', error);
+                document.getElementById('loadingMessage').textContent = 'Erro ao carregar dados';
+            }
+        }
+
+        function verDetalhes(id) {
+            const resposta = todasRespostas.find(r => r.id === id);
+            if (!resposta) return;
+
+            document.getElementById('modalId').textContent = id;
+
+            const data = new Date(resposta.dataEnvio);
+            const dataFormatada = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
+
+            let html = `
+                <div class="response-detail">
+                    <strong>Data de Envio:</strong>
+                    <p>${dataFormatada}</p>
+                </div>
+                <div class="response-detail">
+                    <strong>11 - Grau de autonomia:</strong>
+                    <p>${resposta.q11 || 'Não respondido'}</p>
+                </div>
+                <div class="response-detail">
+                    <strong>12 - Instrumentos utilizados:</strong>
+                    ${resposta.q12 && resposta.q12.length > 0
+                        ? `<ul>${resposta.q12.map(item => `<li>${item}</li>`).join('')}</ul>`
+                        : '<p>Não respondido</p>'}
+                </div>
+                <div class="response-detail">
+                    <strong>13 - Viés do serviço:</strong>
+                    <p>${resposta.q13 || 'Não respondido'}</p>
+                </div>
+                <div class="response-detail">
+                    <strong>14 - Diálogo multidisciplinar:</strong>
+                    <p>${resposta.q14_dialogo || 'Não respondido'}</p>
+                </div>
+                <div class="response-detail">
+                    <strong>14 - Formato da relação:</strong>
+                    <p>${resposta.q14_formato || 'Não respondido'}</p>
+                </div>
+                <div class="response-detail">
+                    <strong>15 - Planejamento do trabalho:</strong>
+                    ${resposta.q15 && resposta.q15.length > 0
+                        ? `<ul>${resposta.q15.map(item => `<li>${item}</li>`).join('')}</ul>`
+                        : '<p>Não respondido</p>'}
+                </div>
+                <div class="response-detail">
+                    <strong>16 - Condições de trabalho:</strong>
+                    <ul>
+                        <li>Estrutura física: ${resposta.q16?.estrutura || 'Não respondido'}</li>
+                        <li>Vínculo empregatício: ${resposta.q16?.vinculo || 'Não respondido'}</li>
+                        <li>Carga horária: ${resposta.q16?.carga || 'Não respondido'}</li>
+                        <li>Fluxo de trabalho: ${resposta.q16?.fluxo || 'Não respondido'}</li>
+                        <li>Sistematização: ${resposta.q16?.sistematizacao || 'Não respondido'}</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modalDetalhes').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalDetalhes').style.display = 'none';
+        }
+
+        async function excluirResposta(id) {
+            if (!confirm(`Tem certeza que deseja excluir a resposta #${id}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/respostas/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Erro ao excluir');
+
+                await carregarRespostas();
+            } catch (error) {
+                console.error('Erro ao excluir:', error);
+                alert('Erro ao excluir resposta');
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalDetalhes');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+
+        // Carregar ao abrir página
+        document.addEventListener('DOMContentLoaded', carregarRespostas);
+    </script>
+</body>
+</html>

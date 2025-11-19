@@ -13,6 +13,7 @@
             <nav>
                 <a href="index.html">Formulário</a>
                 <a href="relatorios.html" class="active">Relatórios</a>
+                <a href="admin.html">Administração</a>
             </nav>
         </header>
 
@@ -22,7 +23,6 @@
                 <div class="report-actions">
                     <button onclick="exportarCSV()" class="btn-primary btn-export">Exportar CSV</button>
                     <button onclick="exportarJSON()" class="btn-secondary btn-export">Exportar JSON</button>
-                    <button onclick="confirmarLimpeza()" class="btn-secondary btn-danger">Limpar Dados</button>
                 </div>
             </div>
 
@@ -37,6 +37,8 @@
                     <div class="label">Última Resposta</div>
                 </div>
             </div>
+
+            <div id="loadingMessage" class="loading">Carregando dados...</div>
 
             <!-- Questão 11 -->
             <div class="chart-section">
@@ -109,32 +111,41 @@
     <script src="app.js"></script>
     <script>
         // Carregar relatórios ao abrir a página
-        document.addEventListener('DOMContentLoaded', function() {
-            const respostas = getRespostas();
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const respostas = await getRespostas();
 
-            // Atualizar estatísticas
-            document.getElementById('totalRespostas').textContent = respostas.length;
+                // Esconder loading
+                document.getElementById('loadingMessage').style.display = 'none';
 
-            if (respostas.length > 0) {
-                const ultima = respostas[respostas.length - 1];
-                document.getElementById('ultimaResposta').textContent =
-                    ultima.dataEnvio.split(' ')[0]; // Só a data
+                // Atualizar estatísticas
+                document.getElementById('totalRespostas').textContent = respostas.length;
+
+                if (respostas.length > 0) {
+                    const ultima = respostas[0]; // Já vem ordenado DESC
+                    const data = new Date(ultima.dataEnvio);
+                    document.getElementById('ultimaResposta').textContent =
+                        data.toLocaleDateString('pt-BR');
+                }
+
+                // Gerar gráficos
+                gerarGraficoBarras('chart-q11', contarRespostas(respostas, 'q11'));
+                gerarGraficoBarras('chart-q12', contarRespostas(respostas, 'q12'));
+                gerarGraficoBarras('chart-q13', contarRespostas(respostas, 'q13'));
+                gerarGraficoBarras('chart-q14-dialogo', contarRespostas(respostas, 'q14_dialogo'));
+                gerarGraficoBarras('chart-q14-formato', contarRespostas(respostas, 'q14_formato'));
+                gerarGraficoBarras('chart-q15', contarRespostas(respostas, 'q15'));
+
+                // Questão 16 - subcampos
+                gerarGraficoBarras('chart-q16-estrutura', contarRespostasQ16(respostas, 'estrutura'));
+                gerarGraficoBarras('chart-q16-vinculo', contarRespostasQ16(respostas, 'vinculo'));
+                gerarGraficoBarras('chart-q16-carga', contarRespostasQ16(respostas, 'carga'));
+                gerarGraficoBarras('chart-q16-fluxo', contarRespostasQ16(respostas, 'fluxo'));
+                gerarGraficoBarras('chart-q16-sistematizacao', contarRespostasQ16(respostas, 'sistematizacao'));
+            } catch (error) {
+                console.error('Erro ao carregar relatórios:', error);
+                document.getElementById('loadingMessage').textContent = 'Erro ao carregar dados';
             }
-
-            // Gerar gráficos
-            gerarGraficoBarras('chart-q11', contarRespostas(respostas, 'q11'));
-            gerarGraficoBarras('chart-q12', contarRespostas(respostas, 'q12'));
-            gerarGraficoBarras('chart-q13', contarRespostas(respostas, 'q13'));
-            gerarGraficoBarras('chart-q14-dialogo', contarRespostas(respostas, 'q14_dialogo'));
-            gerarGraficoBarras('chart-q14-formato', contarRespostas(respostas, 'q14_formato'));
-            gerarGraficoBarras('chart-q15', contarRespostas(respostas, 'q15'));
-
-            // Questão 16 - subcampos
-            gerarGraficoBarras('chart-q16-estrutura', contarRespostasQ16(respostas, 'estrutura'));
-            gerarGraficoBarras('chart-q16-vinculo', contarRespostasQ16(respostas, 'vinculo'));
-            gerarGraficoBarras('chart-q16-carga', contarRespostasQ16(respostas, 'carga'));
-            gerarGraficoBarras('chart-q16-fluxo', contarRespostasQ16(respostas, 'fluxo'));
-            gerarGraficoBarras('chart-q16-sistematizacao', contarRespostasQ16(respostas, 'sistematizacao'));
         });
     </script>
 </body>

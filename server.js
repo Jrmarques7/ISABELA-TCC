@@ -131,6 +131,23 @@ app.get('/api/estatisticas', async (req, res) => {
   }
 });
 
+// Excluir uma resposta específica
+app.delete('/api/respostas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query('DELETE FROM respostas WHERE id = $1', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, error: 'Resposta não encontrada' });
+    }
+
+    res.json({ success: true, message: 'Resposta removida com sucesso' });
+  } catch (error) {
+    console.error('Erro ao excluir resposta:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Limpar todas as respostas (protegido por confirmação)
 app.delete('/api/respostas', async (req, res) => {
   try {
