@@ -343,6 +343,17 @@ form {
     color: white;
 }
 
+.bar-count {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2c3e50;
+    background: #e8f4fc;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
 .no-data {
     text-align: center;
     color: #95a5a6;

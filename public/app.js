@@ -190,9 +190,10 @@ function gerarGraficoBarras(containerId, dados) {
                 <span class="bar-label">${label}</span>
                 <div class="bar-container">
                     <div class="bar" style="width: ${barWidth}%">
-                        <span class="bar-value">${count} (${percentage}%)</span>
+                        <span class="bar-value">${percentage}%</span>
                     </div>
                 </div>
+                <span class="bar-count">${count}</span>
             </div>
         `;
     });
