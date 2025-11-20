@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios - Pesquisa Condições de Trabalho</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -21,7 +22,8 @@
             <div class="report-header">
                 <h2>Relatório de Respostas</h2>
                 <div class="report-actions">
-                    <button onclick="exportarCSV()" class="btn-primary btn-export">Exportar CSV</button>
+                    <button onclick="baixarGraficos()" class="btn-primary btn-export">Baixar Gráficos</button>
+                    <button onclick="exportarCSV()" class="btn-secondary btn-export">Exportar CSV</button>
                     <button onclick="exportarJSON()" class="btn-secondary btn-export">Exportar JSON</button>
                 </div>
             </div>
@@ -40,6 +42,7 @@
 
             <div id="loadingMessage" class="loading">Carregando dados...</div>
 
+            <div id="graficos-container">
             <!-- Questão 11 -->
             <div class="chart-section">
                 <h3>11 – Grau de realização da autonomia profissional</h3>
@@ -105,6 +108,7 @@
                 <h3>16 – Condições de trabalho: Sistematização da prática</h3>
                 <div class="chart-container" id="chart-q16-sistematizacao"></div>
             </div>
+            </div>
         </div>
     </div>
 
@@ -147,6 +151,42 @@
                 document.getElementById('loadingMessage').textContent = 'Erro ao carregar dados';
             }
         });
+
+        // Função para baixar todos os gráficos como imagem
+        async function baixarGraficos() {
+            const container = document.getElementById('graficos-container');
+            const btn = event.target;
+
+            // Feedback visual
+            btn.textContent = 'Gerando imagem...';
+            btn.disabled = true;
+
+            try {
+                // Configurações para melhor qualidade
+                const canvas = await html2canvas(container, {
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: container.scrollWidth,
+                    windowHeight: container.scrollHeight
+                });
+
+                // Criar link de download
+                const link = document.createElement('a');
+                link.download = `relatorio_graficos_${new Date().toISOString().split('T')[0]}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                btn.textContent = 'Baixar Gráficos';
+                btn.disabled = false;
+            } catch (error) {
+                console.error('Erro ao gerar imagem:', error);
+                alert('Erro ao gerar imagem dos gráficos');
+                btn.textContent = 'Baixar Gráficos';
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
