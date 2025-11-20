@@ -446,11 +446,16 @@ form {
     height: 200px;
 }
 
+.grouped-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .grouped-bar {
     width: 16px;
     min-height: 3px;
     border-radius: 2px 2px 0 0;
-    position: relative;
     cursor: pointer;
     transition: opacity 0.2s;
 }
@@ -459,24 +464,20 @@ form {
     opacity: 0.8;
 }
 
-.grouped-bar:hover .grouped-bar-value {
-    display: block;
-}
-
 .grouped-bar-value {
-    display: none;
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 600;
     color: #2c3e50;
-    white-space: nowrap;
-    padding-bottom: 2px;
-    background: rgba(255,255,255,0.9);
-    padding: 2px 4px;
-    border-radius: 2px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+.chart-percent-label {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    margin-top: 10px;
+    font-style: italic;
 }
 
 /* Responsivo */

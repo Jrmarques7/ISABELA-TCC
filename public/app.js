@@ -266,7 +266,6 @@ function gerarGraficoConsolidadoQ16(containerId, respostas) {
     categorias.forEach(categoria => {
         html += `
             <div class="bar-group">
-                <div class="bar-group-label">${categoria}</div>
                 <div class="bar-group-bars">
         `;
 
@@ -276,20 +275,24 @@ function gerarGraficoConsolidadoQ16(containerId, respostas) {
             const barHeight = Math.max(percentage * 2, 3); // Escala para visualização
 
             html += `
-                <div class="grouped-bar" style="height: ${barHeight}px; background: ${dim.cor};" title="${dim.nome}: ${count} (${percentage}%)">
-                    <span class="grouped-bar-value">${percentage}%</span>
+                <div class="grouped-bar-wrapper">
+                    <div class="grouped-bar" style="height: ${barHeight}px; background: ${dim.cor};" title="${dim.nome}: ${count} (${percentage}%)">
+                    </div>
+                    <span class="grouped-bar-value">${percentage}</span>
                 </div>
             `;
         });
 
         html += `
                 </div>
+                <div class="bar-group-label">${categoria}</div>
             </div>
         `;
     });
 
     html += `
             </div>
+            <div class="chart-percent-label">Percentual (%)</div>
         </div>
     `;
 
