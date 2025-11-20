@@ -80,34 +80,10 @@
                 <div class="chart-container" id="chart-q15"></div>
             </div>
 
-            <!-- Questão 16 - Estrutura -->
+            <!-- Questão 16 - Gráfico Consolidado -->
             <div class="chart-section">
-                <h3>16 – Condições de trabalho: Estrutura física</h3>
-                <div class="chart-container" id="chart-q16-estrutura"></div>
-            </div>
-
-            <!-- Questão 16 - Vínculo -->
-            <div class="chart-section">
-                <h3>16 – Condições de trabalho: Vínculo empregatício</h3>
-                <div class="chart-container" id="chart-q16-vinculo"></div>
-            </div>
-
-            <!-- Questão 16 - Carga -->
-            <div class="chart-section">
-                <h3>16 – Condições de trabalho: Carga horária</h3>
-                <div class="chart-container" id="chart-q16-carga"></div>
-            </div>
-
-            <!-- Questão 16 - Fluxo -->
-            <div class="chart-section">
-                <h3>16 – Condições de trabalho: Fluxo de trabalho</h3>
-                <div class="chart-container" id="chart-q16-fluxo"></div>
-            </div>
-
-            <!-- Questão 16 - Sistematização -->
-            <div class="chart-section">
-                <h3>16 – Condições de trabalho: Sistematização da prática</h3>
-                <div class="chart-container" id="chart-q16-sistematizacao"></div>
+                <h3>16 – Condições de Trabalho (Consolidado)</h3>
+                <div class="chart-container" id="chart-q16-consolidado"></div>
             </div>
             </div>
         </div>
@@ -141,12 +117,8 @@
                 gerarGraficoBarras('chart-q14-formato', contarRespostas(respostas, 'q14_formato'));
                 gerarGraficoBarras('chart-q15', contarRespostas(respostas, 'q15'));
 
-                // Questão 16 - subcampos
-                gerarGraficoBarras('chart-q16-estrutura', contarRespostasQ16(respostas, 'estrutura'));
-                gerarGraficoBarras('chart-q16-vinculo', contarRespostasQ16(respostas, 'vinculo'));
-                gerarGraficoBarras('chart-q16-carga', contarRespostasQ16(respostas, 'carga'));
-                gerarGraficoBarras('chart-q16-fluxo', contarRespostasQ16(respostas, 'fluxo'));
-                gerarGraficoBarras('chart-q16-sistematizacao', contarRespostasQ16(respostas, 'sistematizacao'));
+                // Questão 16 - Gráfico consolidado
+                gerarGraficoConsolidadoQ16('chart-q16-consolidado', respostas);
             } catch (error) {
                 console.error('Erro ao carregar relatórios:', error);
                 document.getElementById('loadingMessage').textContent = 'Erro ao carregar dados';
@@ -173,11 +145,7 @@
                     'Q14_Dialogo_Multidisciplinar',
                     'Q14_Formato_Relacao',
                     'Q15_Planejamento_Trabalho',
-                    'Q16_Estrutura_Fisica',
-                    'Q16_Vinculo_Empregaticio',
-                    'Q16_Carga_Horaria',
-                    'Q16_Fluxo_Trabalho',
-                    'Q16_Sistematizacao'
+                    'Q16_Condicoes_Trabalho_Consolidado'
                 ];
 
                 // Gerar cada gráfico como imagem

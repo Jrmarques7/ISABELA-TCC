@@ -202,6 +202,100 @@ function gerarGraficoBarras(containerId, dados) {
     container.innerHTML = html;
 }
 
+// Gráfico consolidado da Q16 com barras agrupadas
+function gerarGraficoConsolidadoQ16(containerId, respostas) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Dimensões e suas cores
+    const dimensoes = [
+        { id: 'carga', nome: 'Carga horária', cor: '#3498db' },
+        { id: 'estrutura', nome: 'Estrutura física', cor: '#e74c3c' },
+        { id: 'fluxo', nome: 'Fluxo de trabalho', cor: '#2ecc71' },
+        { id: 'sistematizacao', nome: 'Sistematização da prática', cor: '#f39c12' },
+        { id: 'vinculo', nome: 'Vínculo empregatício', cor: '#9b59b6' }
+    ];
+
+    // Categorias na ordem correta (eixo X)
+    const categorias = ['Muito bom', 'Bom', 'Neutro', 'Ruim', 'Muito ruim'];
+
+    // Contar respostas por dimensão e categoria
+    const dados = {};
+    dimensoes.forEach(dim => {
+        dados[dim.id] = {};
+        categorias.forEach(cat => {
+            dados[dim.id][cat] = 0;
+        });
+    });
+
+    // Preencher contagens
+    respostas.forEach(resposta => {
+        if (resposta.q16) {
+            dimensoes.forEach(dim => {
+                const valor = resposta.q16[dim.id];
+                if (valor && dados[dim.id][valor] !== undefined) {
+                    dados[dim.id][valor]++;
+                }
+            });
+        }
+    });
+
+    const totalRespostas = respostas.length;
+
+    if (totalRespostas === 0) {
+        container.innerHTML = '<div class="no-data">Sem dados para exibir</div>';
+        return;
+    }
+
+    // Gerar HTML do gráfico
+    let html = `
+        <div class="chart-consolidated">
+            <div class="chart-title">16 – Condições de Trabalho</div>
+            <div class="chart-legend">
+                ${dimensoes.map(dim => `
+                    <div class="legend-item">
+                        <span class="legend-color" style="background: ${dim.cor}"></span>
+                        <span class="legend-text">${dim.nome}</span>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="grouped-bars">
+    `;
+
+    // Para cada categoria, criar um grupo de barras
+    categorias.forEach(categoria => {
+        html += `
+            <div class="bar-group">
+                <div class="bar-group-label">${categoria}</div>
+                <div class="bar-group-bars">
+        `;
+
+        dimensoes.forEach(dim => {
+            const count = dados[dim.id][categoria];
+            const percentage = ((count / totalRespostas) * 100).toFixed(1);
+            const barHeight = Math.max(percentage * 2, 3); // Escala para visualização
+
+            html += `
+                <div class="grouped-bar" style="height: ${barHeight}px; background: ${dim.cor};" title="${dim.nome}: ${count} (${percentage}%)">
+                    <span class="grouped-bar-value">${percentage}%</span>
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+    });
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
 async function exportarCSV() {
     const respostas = await getRespostas();
 
