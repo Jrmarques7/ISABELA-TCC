@@ -408,12 +408,13 @@ form {
 
 .grouped-bars {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-end;
     min-height: 250px;
     padding: 20px 10px;
     border-left: 2px solid #bdc3c7;
     border-bottom: 2px solid #bdc3c7;
+    overflow-x: auto;
 }
 
 .bar-group {
@@ -421,8 +422,9 @@ form {
     flex-direction: column;
     align-items: center;
     flex: 1;
+    min-width: 0;
     border-right: 1px solid #ddd;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .bar-group:last-child {
@@ -430,7 +432,7 @@ form {
 }
 
 .bar-group-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #34495e;
     margin-top: 10px;
     text-align: center;
@@ -440,12 +442,12 @@ form {
 .bar-group-bars {
     display: flex;
     align-items: flex-end;
-    gap: 8px;
+    gap: 4px;
     height: 200px;
 }
 
 .grouped-bar {
-    width: 24px;
+    width: 16px;
     min-height: 3px;
     border-radius: 2px 2px 0 0;
     position: relative;
@@ -457,16 +459,24 @@ form {
     opacity: 0.8;
 }
 
+.grouped-bar:hover .grouped-bar-value {
+    display: block;
+}
+
 .grouped-bar-value {
+    display: none;
     position: absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: #2c3e50;
     white-space: nowrap;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
+    background: rgba(255,255,255,0.9);
+    padding: 2px 4px;
+    border-radius: 2px;
 }
 
 /* Responsivo */
