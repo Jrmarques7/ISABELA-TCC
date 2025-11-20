@@ -434,12 +434,12 @@ form {
 .bar-group-bars {
     display: flex;
     align-items: flex-end;
-    gap: 3px;
+    gap: 8px;
     height: 200px;
 }
 
 .grouped-bar {
-    width: 18px;
+    width: 24px;
     min-height: 3px;
     border-radius: 2px 2px 0 0;
     position: relative;
@@ -456,11 +456,11 @@ form {
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: #2c3e50;
     white-space: nowrap;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
 }
 
 /* Responsivo */
