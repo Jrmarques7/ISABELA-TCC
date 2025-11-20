@@ -6,6 +6,7 @@
     <title>Relatórios - Pesquisa Condições de Trabalho</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -152,37 +153,64 @@
             }
         });
 
-        // Função para baixar todos os gráficos como imagem
+        // Função para baixar todos os gráficos como imagens separadas em ZIP
         async function baixarGraficos() {
-            const container = document.getElementById('graficos-container');
             const btn = event.target;
 
             // Feedback visual
-            btn.textContent = 'Gerando imagem...';
+            btn.textContent = 'Gerando imagens...';
             btn.disabled = true;
 
             try {
-                // Configurações para melhor qualidade
-                const canvas = await html2canvas(container, {
-                    backgroundColor: '#ffffff',
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    windowWidth: container.scrollWidth,
-                    windowHeight: container.scrollHeight
-                });
+                const zip = new JSZip();
+                const chartSections = document.querySelectorAll('.chart-section');
 
-                // Criar link de download
+                // Nomes dos arquivos para cada gráfico
+                const nomes = [
+                    'Q11_Autonomia_Profissional',
+                    'Q12_Instrumentos_Cotidiano',
+                    'Q13_Vies_Servico',
+                    'Q14_Dialogo_Multidisciplinar',
+                    'Q14_Formato_Relacao',
+                    'Q15_Planejamento_Trabalho',
+                    'Q16_Estrutura_Fisica',
+                    'Q16_Vinculo_Empregaticio',
+                    'Q16_Carga_Horaria',
+                    'Q16_Fluxo_Trabalho',
+                    'Q16_Sistematizacao'
+                ];
+
+                // Gerar cada gráfico como imagem
+                for (let i = 0; i < chartSections.length; i++) {
+                    const section = chartSections[i];
+
+                    const canvas = await html2canvas(section, {
+                        backgroundColor: '#ffffff',
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    });
+
+                    // Converter para blob e adicionar ao ZIP
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    zip.file(`${nomes[i]}.png`, blob);
+
+                    // Atualizar progresso
+                    btn.textContent = `Gerando ${i + 1}/${chartSections.length}...`;
+                }
+
+                // Gerar e baixar o ZIP
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
                 const link = document.createElement('a');
-                link.download = `relatorio_graficos_${new Date().toISOString().split('T')[0]}.png`;
-                link.href = canvas.toDataURL('image/png');
+                link.download = `graficos_pesquisa_${new Date().toISOString().split('T')[0]}.zip`;
+                link.href = URL.createObjectURL(zipBlob);
                 link.click();
 
                 btn.textContent = 'Baixar Gráficos';
                 btn.disabled = false;
             } catch (error) {
-                console.error('Erro ao gerar imagem:', error);
-                alert('Erro ao gerar imagem dos gráficos');
+                console.error('Erro ao gerar imagens:', error);
+                alert('Erro ao gerar imagens dos gráficos');
                 btn.textContent = 'Baixar Gráficos';
                 btn.disabled = false;
             }
