@@ -165,11 +165,13 @@ function contarRespostasQ16(respostas, subcampo) {
     return contagem;
 }
 
-function gerarGraficoBarras(containerId, dados) {
+function gerarGraficoBarras(containerId, dados, totalRespondentes = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const total = Object.values(dados).reduce((a, b) => a + b, 0);
+    // Se não passar totalRespondentes, usar a soma (para questões de resposta única)
+    // Se passar, usar o total de respondentes (para questões de múltipla escolha)
+    const total = totalRespondentes || Object.values(dados).reduce((a, b) => a + b, 0);
 
     if (total === 0) {
         container.innerHTML = '<div class="no-data">Sem dados para exibir</div>';

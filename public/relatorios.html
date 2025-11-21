@@ -111,11 +111,11 @@
 
                 // Gerar gráficos
                 gerarGraficoBarras('chart-q11', contarRespostas(respostas, 'q11'));
-                gerarGraficoBarras('chart-q12', contarRespostas(respostas, 'q12'));
+                gerarGraficoBarras('chart-q12', contarRespostas(respostas, 'q12'), respostas.length); // Múltipla escolha
                 gerarGraficoBarras('chart-q13', contarRespostas(respostas, 'q13'));
                 gerarGraficoBarras('chart-q14-dialogo', contarRespostas(respostas, 'q14_dialogo'));
                 gerarGraficoBarras('chart-q14-formato', contarRespostas(respostas, 'q14_formato'));
-                gerarGraficoBarras('chart-q15', contarRespostas(respostas, 'q15'));
+                gerarGraficoBarras('chart-q15', contarRespostas(respostas, 'q15'), respostas.length); // Múltipla escolha
 
                 // Questão 16 - Gráfico consolidado
                 gerarGraficoConsolidadoQ16('chart-q16-consolidado', respostas);
